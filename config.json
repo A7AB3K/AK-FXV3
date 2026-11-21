@@ -1,0 +1,4 @@
+{
+  "watch": ["XAU/USD", "BTC/USDT"],
+  "tfs": ["15m"]
+}

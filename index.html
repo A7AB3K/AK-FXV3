@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>AK Trading AI</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#0a0a0b;--card:#141416;--card2:#1b1b1e;--line:#2c2511;--gold:#d4af37;--gold2:#f3d77a;--tx:#ececec;--mut:#8f8f96;--buy:#2fd27a;--sell:#ff4d5e;--wait:#e0b341}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{padding-bottom:84px;min-height:100vh;background:radial-gradient(1200px 500px at 50% -200px,#2a210a 0,transparent 70%),var(--bg)}
+header{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--line)}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--gold2),var(--gold) 55%,#8a6d12);color:#0a0a0b;font-weight:800;display:grid;place-items:center;letter-spacing:.5px}
+h1{font-size:18px;margin:0;color:var(--gold2);letter-spacing:.4px}
+.sub{font-size:11px;color:var(--mut)}
+main{max-width:760px;margin:0 auto;padding:14px}
+.tab{display:none}.tab.on{display:block}
+.card{background:linear-gradient(180deg,var(--card),#101012);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+label{display:block;font-size:11px;color:var(--mut);margin:0 0 5px;text-transform:uppercase;letter-spacing:.8px}
+select,input[type=text],input[type=password]{width:100%;background:var(--card2);color:var(--tx);border:1px solid #33300f;border-radius:10px;padding:11px;font-size:15px}
+button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-weight:700;color:#0a0a0b;background:linear-gradient(135deg,var(--gold2),var(--gold) 60%,#a58219);cursor:pointer;margin-top:12px}
+button.ghost{background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+button:disabled{opacity:.5}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0d0d0f;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{margin:0;border-radius:0;background:transparent;color:var(--mut);padding:13px 4px;font-size:12px;font-weight:600}
+nav button.on{color:var(--gold2);box-shadow:inset 0 2px 0 var(--gold)}
+.sig{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badge{font-size:30px;font-weight:900;letter-spacing:2px;padding:6px 18px;border-radius:12px;border:2px solid}
+.badge.BUY{color:var(--buy);border-color:var(--buy);background:#0e2a1a}
+.badge.SELL{color:var(--sell);border-color:var(--sell);background:#2b1014}
+.badge.WAIT{color:var(--wait);border-color:var(--wait);background:#2a2310}
+.score{text-align:right;font-size:12px;color:var(--mut)}.score b{display:block;font-size:20px;color:var(--gold2)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.cell{background:var(--card2);border:1px solid #2a2410;border-radius:10px;padding:9px}
+.cell span{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.7px}
+.cell b{display:block;font-size:15px;margin-top:2px}
+.cell.e b{color:var(--gold2)}.cell.s b{color:var(--sell)}.cell.t b{color:var(--buy)}
+ul.rs{list-style:none;margin:10px 0 0;padding:0}
+ul.rs li{padding:8px 0;border-bottom:1px solid #1f1c0c;font-size:13.5px;line-height:1.45;display:flex;gap:8px}
+ul.rs li i{font-style:normal;min-width:28px;font-weight:700;text-align:center}
+.p{color:var(--buy)}.n{color:var(--sell)}.z{color:var(--mut)}
+.exp{font-size:14px;line-height:1.6;margin-top:10px;color:#d8d8d8;white-space:pre-line}
+h3{margin:0 0 8px;color:var(--gold2);font-size:14px;letter-spacing:.5px}
+canvas{width:100%;height:340px;display:block;border-radius:10px;background:#0c0c0e}
+.note{font-size:11.5px;color:var(--mut);line-height:1.5}
+.warn{border-color:#5a4410;background:#1a1507}
+.drop{border:2px dashed #4a3d10;border-radius:14px;padding:22px;text-align:center;color:var(--mut);cursor:pointer}
+.drop img{max-width:100%;border-radius:10px;margin-top:10px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #0a0a0b55;border-top-color:#0a0a0b;border-radius:50%;animation:r .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes r{to{transform:rotate(360deg)}}
+.err{color:var(--sell);font-size:13px;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card2);border:1px solid #2a2410;border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px;color:var(--gold2)}.stat span{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px}
+.stat.w b{color:var(--buy)}.stat.l b{color:var(--sell)}
+.jr{border-bottom:1px solid #1f1c0c;padding:10px 0;font-size:13px}
+.jr .h{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:3px}
+.tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:8px;border:1px solid;white-space:nowrap}
+.tag.WIN{color:var(--buy);border-color:var(--buy)}.tag.LOSS{color:var(--sell);border-color:var(--sell)}
+.tag.OPEN,.tag.PENDING{color:var(--wait);border-color:var(--wait)}.tag.EXPIRED,.tag.MISSED{color:var(--mut);border-color:#444}
+.chk{display:flex;flex-wrap:wrap;gap:8px 16px;margin:4px 0 12px}
+.chk label{display:flex;align-items:center;gap:6px;text-transform:none;font-size:13px;color:var(--tx);letter-spacing:0;margin:0}
+.chk input{width:18px;height:18px;accent-color:#d4af37}
+button.sm{width:auto;padding:9px 14px;font-size:13px;margin-top:8px}
+.live{font-size:12px;color:var(--mut);margin-top:10px;line-height:1.5}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;margin-right:6px}
+.dot.on{background:var(--buy);box-shadow:0 0 8px var(--buy)}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.sym-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1f1c0c;font-size:13px;color:var(--tx)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">AK</div>
+  <div><h1>AK Trading AI</h1><div class="sub">ICT · Market Profile · Order Flow</div></div>
+</header>
+<main>
+<section id="t-auto" class="tab on">
+  <div class="card">
+    <div class="row">
+      <div><label>Нарық / Symbol</label><select id="sym"></select></div>
+      <div><label>Timeframe</label><select id="tf"><option>5m</option><option selected>15m</option><option>1h</option><option>4h</option></select></div>
+    </div>
+    <button id="go">Талдау / Analyze</button>
+    <div id="err" class="err"></div>
+  </div>
+  <div class="card">
+    <div class="sig"><h3 style="margin:0">Auto-scan + Telegram</h3><button id="autoBtn" class="sm" style="margin:0">Қосу</button></div>
+    <div class="live"><span id="dot" class="dot"></span><span id="live">Өшірулі</span></div>
+    <div class="note" style="margin-top:6px">Watchlist, Telegram және интервал — Settings ішінде. Қолданба ашық тұрғанда ғана жұмыс істейді.</div>
+  </div>
+  <div id="out"></div>
+</section>
+
+<section id="t-shot" class="tab">
+  <div class="card">
+    <h3>Скриншот талдау</h3>
+    <div class="note">Чарттың скриншотын жүктеңіз (TradingView, MT5 т.б.). Талдауды Claude Vision жасайды — ол үшін Settings ішінде Anthropic API key қажет.</div>
+    <div class="drop" id="drop">Скриншотты осында басып таңдаңыз немесе Ctrl+V арқылы қойыңыз<div id="prev"></div></div>
+    <input id="file" type="file" accept="image/*" hidden>
+    <div class="row" style="margin-top:12px">
+      <div><label>Symbol (міндетті емес)</label><input id="s-sym" type="text" placeholder="XAU/USD"></div>
+      <div><label>Timeframe (міндетті емес)</label><input id="s-tf" type="text" placeholder="15m"></div>
+    </div>
+    <button id="go2">Скриншотты талда</button>
+    <div id="err2" class="err"></div>
+  </div>
+  <div id="out2"></div>
+</section>
+
+<section id="t-jr" class="tab">
+  <div class="card"><div class="sig" style="margin-bottom:8px"><h3 style="margin:0">Статистика</h3><button class="sm ghost" id="jsrc" style="margin:0" type="button">Көзі</button></div><div class="stats" id="stats"></div><div class="note" id="stnote" style="margin-top:10px"></div></div>
+  <div class="card"><h3>Нарық бойынша</h3><div id="bysym"></div></div>
+  <div class="card"><h3>Сигналдар тарихы</h3><div id="jlist"></div>
+    <div class="row"><button class="sm ghost" id="csv" type="button">CSV жүктеу</button><button class="sm ghost" id="clr" type="button">Тарихты тазалау</button></div>
+  </div>
+</section>
+
+<section id="t-set" class="tab">
+  <div class="card">
+    <h3>Баптаулар</h3>
+    <label>Twelve Data API key (XAU/USD нақты дерек + Forex)</label>
+    <input id="k-td" type="password" placeholder="twelvedata.com — тегін key">
+    <div class="note" style="margin:6px 0 14px">Key жоқ болса: Crypto — Binance (тегін, key керек емес), XAU/USD — PAXG/USDT proxy (алтынға байланған токен), Forex — қолжетімсіз.</div>
+    <label>Anthropic API key (скриншот талдау үшін)</label>
+    <input id="k-an" type="password" placeholder="sk-ant-...">
+    <div class="note" style="margin-top:6px">Key-лер тек осы құрылғының браузерінде сақталады.</div>
+    <hr>
+    <h3>Telegram</h3>
+    <label>Bot Token</label>
+    <input id="k-tg" type="password" placeholder="123456:ABC-DEF...">
+    <label style="margin-top:10px">Chat ID</label>
+    <input id="k-chat" type="text" inputmode="numeric" placeholder="123456789">
+    <button class="sm ghost" id="tgtest" type="button">Тест хабар жіберу</button>
+    <div class="note" id="tgmsg" style="margin-top:8px">Telegram-да @BotFather → /newbot арқылы bot жасап, token алыңыз. Өз ботыңызға /start жазыңыз. Chat ID-ді @userinfobot көрсетеді.</div>
+    <hr>
+    <h3>Auto-scan</h3>
+    <label>Watchlist (қай нарықты сканерлеу)</label>
+    <div class="chk" id="wl"></div>
+    <div class="row">
+      <div><label>Timeframe</label><select id="s-scantf"><option>5m</option><option>15m</option><option>1h</option><option>4h</option></select></div>
+      <div><label>Әр қанша минут</label><select id="s-min"><option>1</option><option>5</option><option>15</option><option>30</option><option>60</option></select></div>
+    </div>
+    <div class="chk" style="margin-top:12px">
+      <label><input type="checkbox" id="s-wake"> Экранды қосулы ұстау</label>
+      <label><input type="checkbox" id="s-notif"> Телефон хабарламасы</label>
+    </div>
+    <div class="note">Twelve Data тегін планы минутына 8 сұраныс береді, сондықтан Forex/XAU сканері баяу жүреді. Watchlist-ті қысқа ұстаңыз.</div>
+    <button id="save">Сақтау</button>
+  </div>
+  <div class="card warn">
+    <h3>Ескерту</h3>
+    <div class="note">Бұл құрал білім беру және талдау үшін. Қаржылық кеңес емес. Автоматты сауда жоқ — барлық шешімді өзіңіз қабылдайсыз. Order Flow деректері: Crypto үшін нақты taker buy/sell volume, Forex/XAU үшін тек approximation. Әр сигналды өз тәуекел жоспарыңызбен тексеріңіз.</div>
+  </div>
+</section>
+</main>
+
+<nav>
+  <button data-t="auto" class="on">Auto Analysis</button>
+  <button data-t="shot">Screenshot</button>
+  <button data-t="jr">Journal</button>
+  <button data-t="set">Settings</button>
+</nav>
+
+<script src="engine.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+const TDI={'5m':'5min','15m':'15min','1h':'1h','4h':'4h','1d':'1day'};
+for(const k in SYMS){const o=document.createElement('option');o.textContent=k;$('sym').appendChild(o)}
+
+/* ---------- data ---------- */
+async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+async function binance(sym,tf){
+  let last;
+  for(const h of ['https://data-api.binance.vision','https://api.binance.com']){
+    try{
+      const d=await getJSON(`${h}/api/v3/klines?symbol=${sym}&interval=${tf}&limit=300`);
+      return d.map(k=>({t:k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5],tb:+k[9]}));
+    }catch(e){last=e}
+  }
+  throw new Error('Binance дерегі алынбады ('+last.message+')');
+}
+let tdLast=0,tdChain=Promise.resolve();
+function tdGate(){const p=tdChain.then(async()=>{const w=Math.max(0,tdLast+7700-Date.now());if(w)await new Promise(r=>setTimeout(r,w));tdLast=Date.now()});tdChain=p.catch(()=>{});return p}
+async function twelve(sym,tf,key){
+  await tdGate();
+  const d=await getJSON(`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(sym)}&interval=${TDI[tf]}&outputsize=300&timezone=UTC&apikey=${key}`);
+  if(d.status==='error'||!d.values)throw new Error(d.message||'Twelve Data қатесі');
+  return d.values.reverse().map(x=>({t:Date.parse(x.datetime.replace(' ','T')+'Z'),o:+x.open,h:+x.high,l:+x.low,c:+x.close,v:+(x.volume||0),tb:null}));
+}
+async function candles(name,tf){
+  const s=SYMS[name],key=store.get('td');
+  if(s.kind==='crypto')return {c:await binance(s.bn,tf),src:'Binance',real:true};
+  if(key)return {c:await twelve(s.td,tf,key),src:'Twelve Data',real:false};
+  if(s.kind==='gold')return {c:await binance(s.bn,tf),src:'Binance PAXG/USDT (XAU proxy)',real:false,proxy:true};
+  throw new Error('Forex үшін Settings ішінде Twelve Data API key енгізіңіз (тегін).');
+}
+
+/* ---------- render ---------- */
+function renderResult(el,r,meta){
+  const d=r.dec??dec(r.plan?.entry||r.entry||1),f=v=>v==null||v===''||isNaN(+v)?'—':(+v).toFixed(d);
+  const pl=r.plan||{entry:r.entry,sl:r.sl,tp1:r.tp1,tp2:r.tp2,rr:r.rr};
+  let h=`<div class="card"><div class="sig"><div class="badge ${esc(r.sig)}">${esc(r.sig)}</div><div class="score">${r.score!=null?`Score<b>${r.score>0?'+':''}${r.score}</b>`:(r.confidence?`Confidence<b>${esc(r.confidence)}</b>`:'')}</div></div>`;
+  if(meta)h+=`<div class="note" style="margin-top:8px">${meta}</div>`;
+  if(r.sig!=='WAIT'&&pl.entry!=null)h+=`<div class="grid">
+   <div class="cell e"><span>Entry${r.plan?.type?' · '+r.plan.type:''}</span><b>${f(pl.entry)}</b></div>
+   <div class="cell s"><span>Stop Loss</span><b>${f(pl.sl)}</b></div>
+   <div class="cell"><span>R:R</span><b>${pl.rr?'1:'+(+pl.rr).toFixed(2):'—'}</b></div>
+   <div class="cell t"><span>TP1</span><b>${f(pl.tp1)}</b></div>
+   <div class="cell t"><span>TP2</span><b>${f(pl.tp2)}</b></div>
+   <div class="cell"><span>Current</span><b>${f(r.px)}</b></div></div>`;
+  h+=`<div class="exp">${esc(r.exp)}</div></div>`;
+  if(r.reasons&&r.reasons.length){
+    h+=`<div class="card"><h3>Талдау факторлары</h3><ul class="rs">`+r.reasons.map(x=>{
+      if(typeof x==='string')return `<li><i class="z">•</i><span>${esc(x)}</span></li>`;
+      return `<li><i class="${x.s>0?'p':x.s<0?'n':'z'}">${x.s>0?'+'+x.s:x.s<0?x.s:'0'}</i><span>${esc(x.t)}</span></li>`}).join('')+`</ul></div>`;
+  }
+  el.innerHTML=h;
+}
+function drawChart(host,c,r){
+  const cv=document.createElement('canvas'),card=document.createElement('div');card.className='card';card.innerHTML='<h3>Chart</h3>';card.appendChild(cv);host.appendChild(card);
+  const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const s=c.slice(-80),pw=44,cw=(W-pw-52)/s.length;
+  const lv=[r.plan?.entry,r.plan?.sl,r.plan?.tp1,r.P.poc,r.P.vah,r.P.val].filter(x=>x!=null);
+  let hi=Math.max(...s.map(x=>x.h),...lv),lo=Math.min(...s.map(x=>x.l),...lv);const pd=(hi-lo)*.05;hi+=pd;lo-=pd;
+  const y=p=>H-8-(p-lo)/(hi-lo)*(H-16),X=i=>4+i*cw;
+  g.fillStyle='#0c0c0e';g.fillRect(0,0,W,H);
+  // zones
+  for(const z of r.Z){const i=z.i-(c.length-s.length);if(i<-80)continue;g.fillStyle=z.dir==='bull'?'rgba(47,210,122,.13)':'rgba(255,77,94,.13)';
+    g.fillRect(Math.max(4,X(Math.max(0,i))),y(z.top),W-pw-60,Math.max(2,y(z.bot)-y(z.top)));}
+  // profile
+  const mx=Math.max(...r.P.bins);r.P.bins.forEach((v,k)=>{const top=r.P.lo+(k+1)*r.P.st,bot=r.P.lo+k*r.P.st;g.fillStyle='rgba(212,175,55,.28)';g.fillRect(W-pw-48,y(top),v/mx*pw,Math.max(1,y(bot)-y(top)-1))});
+  // candles
+  s.forEach((x,i)=>{const up=x.c>=x.o;g.strokeStyle=g.fillStyle=up?'#2fd27a':'#ff4d5e';g.beginPath();g.moveTo(X(i)+cw/2,y(x.h));g.lineTo(X(i)+cw/2,y(x.l));g.stroke();
+    const t=y(Math.max(x.o,x.c)),b=y(Math.min(x.o,x.c));g.fillRect(X(i)+cw*.15,t,Math.max(1,cw*.7),Math.max(1,b-t))});
+  const line=(p,col,lab,dash)=>{if(p==null)return;g.strokeStyle=col;g.setLineDash(dash||[]);g.beginPath();g.moveTo(0,y(p));g.lineTo(W-52,y(p));g.stroke();g.setLineDash([]);g.fillStyle=col;g.font='10px sans-serif';g.fillText(lab+' '+p.toFixed(r.dec),W-100,y(p)-3)};
+  line(r.P.poc,'#d4af37','POC');line(r.P.vah,'#8a6d12','VAH',[4,3]);line(r.P.val,'#8a6d12','VAL',[4,3]);
+  if(r.plan){line(r.plan.entry,'#f3d77a','ENTRY');line(r.plan.sl,'#ff4d5e','SL');line(r.plan.tp1,'#2fd27a','TP1')}
+  g.fillStyle='#8f8f96';g.font='10px sans-serif';g.textAlign='right';for(let k=0;k<5;k++){const p=lo+(hi-lo)*k/4;g.fillText(p.toFixed(r.dec),W-2,y(p)+3)}
+}
+
+/* ---------- actions ---------- */
+$('go').onclick=async()=>{
+  const name=$('sym').value,tf=$('tf').value,b=$('go');
+  $('err').textContent='';b.disabled=true;b.innerHTML='<span class="spin"></span>Талдап жатыр...';
+  try{
+    const {L,htf}=await fetchBoth(name,tf);
+    if(L.c.length<80)throw new Error('Дерек жеткіліксіз');
+    const r=analyze(L.c,htf,name,tf);
+    $('out').innerHTML='<div id="o1"></div><div id="o2"></div>';
+    renderResult($('o1'),r,`${esc(name)} · ${tf} · Дерек: ${esc(L.src)}${L.proxy?' ⚠ XAU/USD емес, proxy баға':''} · ${new Date().toLocaleTimeString('kk-KZ',{hour:'2-digit',minute:'2-digit'})}`);
+    drawChart($('o2'),L.c,r);
+  }catch(e){$('err').textContent='Қате: '+e.message}
+  b.disabled=false;b.textContent='Талдау / Analyze';
+};
+
+let shot=null;
+$('drop').onclick=()=>$('file').click();
+$('file').onchange=e=>e.target.files[0]&&loadShot(e.target.files[0]);
+document.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it)loadShot(it.getAsFile())});
+function loadShot(f){
+  const img=new Image(),u=URL.createObjectURL(f);
+  img.onload=()=>{const m=1600,k=Math.min(1,m/Math.max(img.width,img.height)),cv=document.createElement('canvas');cv.width=img.width*k;cv.height=img.height*k;
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);shot=cv.toDataURL('image/jpeg',.88).split(',')[1];
+    $('prev').innerHTML=`<img src="${u}">`};
+  img.src=u;
+}
+$('go2').onclick=async()=>{
+  const key=store.get('an'),b=$('go2');$('err2').textContent='';
+  if(!shot)return $('err2').textContent='Алдымен скриншот таңдаңыз.';
+  if(!key)return $('err2').textContent='Settings ішінде Anthropic API key енгізіңіз.';
+  b.disabled=true;b.innerHTML='<span class="spin"></span>Талдап жатыр...';
+  const prompt=`Сен ICT (Smart Money), Market Profile және Order Flow бойынша тәжірибелі трейдер-аналитиксің. Мына чарт скриншотын талда${$('s-sym').value?`. Инструмент: ${$('s-sym').value}`:''}${$('s-tf').value?`, Timeframe: ${$('s-tf').value}`:''}.
+Тек чартта көрінетін нәрсені пайдалан: Market Structure (BOS/CHoCH), FVG, Order Block, Liquidity (equal highs/lows, sweep), Premium/Discount, көрінсе Volume Profile/POC/VAH/VAL және Delta/Footprint. Баға деңгейлерін осі (price axis) бойынша дәл оқы; оқи алмасаң — WAIT бер.
+Тек JSON қайтар, басқа мәтінсіз:
+{"signal":"BUY|SELL|WAIT","entry":number|null,"sl":number|null,"tp1":number|null,"tp2":number|null,"rr":number|null,"confidence":"Low|Medium|High","factors":["қазақша, ағылшын терминдерімен қысқа фактор", "..."],"explanation":"қазақша түсіндірме (ағылшын терминдерін қалдыр), 4-6 сөйлем, не күту керек және invalidation деңгейі"}`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-5-5',max_tokens:1500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:shot}},{type:'text',text:prompt}]}]})});
+    const j=await res.json();if(!res.ok)throw new Error(j.error?.message||'HTTP '+res.status);
+    const txt=j.content.map(x=>x.text||'').join(''),m=txt.match(/\{[\s\S]*\}/);if(!m)throw new Error('Жауап форматы дұрыс емес');
+    const a=JSON.parse(m[0]),sig=['BUY','SELL'].includes(a.signal)?a.signal:'WAIT',ref=a.entry||a.tp1||1;
+    renderResult($('out2'),{sig,score:null,confidence:a.confidence,entry:a.entry,sl:a.sl,tp1:a.tp1,tp2:a.tp2,rr:a.rr,dec:dec(ref),exp:a.explanation||'',reasons:(a.factors||[]).map(String)},'Скриншот талдауы · Claude Vision · деңгейлерді өз чартыңызбен тексеріңіз');
+  }catch(e){$('err2').textContent='Қате: '+e.message}
+  b.disabled=false;b.textContent='Скриншотты талда';
+};
+
+/* ---------- v2: journal, Telegram, auto-scan ---------- */
+const cache=new Map();
+function cget(name,tf){
+  const k=name+'|'+tf,h=cache.get(k);if(h&&Date.now()-h.t<60000)return h.p;
+  const p=candles(name,tf);cache.set(k,{t:Date.now(),p});p.catch(()=>cache.delete(k));return p;
+}
+async function fetchBoth(name,tf){
+  const L=await cget(name,tf);let htf=L.c;
+  try{htf=(await cget(name,HTF[tf])).c}catch(e){}
+  return {L,htf};
+}
+
+
+
+const jget=()=>{try{return JSON.parse(store.get('journal')||'[]')}catch(e){return[]}};
+const jset=a=>store.set('journal',JSON.stringify(a.slice(-500)));
+const cfg=()=>{try{return JSON.parse(store.get('cfg')||'{}')}catch(e){return{}}};
+const cfgSet=o=>store.set('cfg',JSON.stringify({...cfg(),...o}));
+
+async function tg(text){
+  const t=store.get('tgtoken'),c=store.get('tgchat');tg.err='';
+  if(!t||!c){tg.err='Token немесе Chat ID жоқ';return false}
+  try{
+    const r=await fetch('https://api.telegram.org/bot'+t+'/sendMessage',{method:'POST',body:new URLSearchParams({chat_id:c,text})});
+    const j=await r.json();if(!j.ok)tg.err=j.description||('HTTP '+r.status);return !!j.ok;
+  }catch(e){tg.err=e.message;return false}
+}
+function localNotify(title,body){
+  try{if(cfg().notif&&'Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker)
+    navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:'icon-192.png',tag:title}))}catch(e){}
+}
+function record(name,tf,r,src){
+  const J=jget(),now=Date.now();
+  if(J.some(e=>e.name===name&&e.tf===tf&&e.sig===r.sig&&(e.st==='PENDING'||e.st==='OPEN'||now-e.t<4*36e5)))return null;
+  const dir=r.sig==='BUY'?1:-1;
+  const top=r.reasons.filter(x=>x.s!==0&&Math.sign(x.s)===dir).sort((a,b)=>Math.abs(b.s)-Math.abs(a.s)).slice(0,3).map(x=>x.t);
+  const e={id:now+'-'+Math.random().toString(36).slice(2,6),t:now,name,tf,sig:r.sig,type:r.plan.type,entry:r.plan.entry,sl:r.plan.sl,tp1:r.plan.tp1,tp2:r.plan.tp2,rr:r.plan.rr,score:r.score,d:r.dec,src,top,st:r.plan.type==='LIMIT'?'PENDING':'OPEN',R:0};
+  J.push(e);jset(J);return e;
+}
+function statLine(J){const s=calcStats(J);return `📊 Жабық ${s.w+s.l}: ${s.w} профит / ${s.l} минус · Winrate ${s.wr.toFixed(0)}% · Net ${s.R>0?'+':''}${s.R.toFixed(2)}R`}
+async function notifyChange(e,before,J){
+  let t='';
+  if(e.st==='WIN')t=`✅ PROFIT · ${e.name} ${e.tf} ${e.sig}\nTP1 алынды: +${(+e.rr).toFixed(2)}R\n\n${statLine(J)}`;
+  else if(e.st==='LOSS')t=`❌ LOSS · ${e.name} ${e.tf} ${e.sig}\nStop Loss: −1R\n\n${statLine(J)}`;
+  else if(before==='PENDING'&&e.st==='OPEN')t=`📍 Entry алынды · ${e.name} ${e.tf} ${e.sig}\nEntry: ${(+e.entry).toFixed(e.d)}`;
+  if(t){await tg(t);localNotify('AK Trading AI',t.split('\n')[0])}
+}
+
+let scanning=false,timer=null,nextAt=0,lastScan=0,lastInfo='',wl=null;
+async function scanOnce(){
+  if(scanning)return;scanning=true;cache.clear();
+  const c=cfg(),list=(c.watch&&c.watch.length?c.watch:['XAU/USD','BTC/USDT']).filter(n=>SYMS[n]),tf=c.scanTf||'15m';
+  let ns=0,errs=0,closed=0,firstErr='';
+  try{
+    const J=jget();
+    for(const e of J.filter(e=>e.st==='PENDING'||e.st==='OPEN')){
+      try{const L=await cget(e.name,e.tf),before=e.st;evalEntry(e,L.c);if(e.st!==before)await notifyChange(e,before,J)}
+      catch(err){errs++;firstErr=firstErr||err.message}
+    }
+    jset(J);
+    for(const name of list){
+      try{
+        const {L,htf}=await fetchBoth(name,tf);
+        if(L.c.length<80)throw new Error('Дерек жеткіліксіз');
+        if(SYMS[name].kind!=='crypto'&&!L.proxy&&Date.now()-L.c.at(-1).t>3*TFMS[tf]){closed++;continue}
+        const r=analyze(L.c,htf,name,tf);
+        if(r.sig!=='WAIT'&&r.plan){
+          const e=record(name,tf,r,L.src+(L.proxy?' (proxy)':''));
+          if(e){ns++;await tg(sigText(e));localNotify(`${e.sig} ${e.name}`,`Entry ${(+e.entry).toFixed(e.d)} · SL ${(+e.sl).toFixed(e.d)} · TP1 ${(+e.tp1).toFixed(e.d)}`)}
+        }
+      }catch(err){errs++;firstErr=firstErr||`${name}: ${err.message}`}
+    }
+  }finally{
+    scanning=false;lastScan=Date.now();
+    lastInfo=`${ns} жаңа сигнал`+(closed?` · ${closed} нарық жабық`:'')+(errs?` · ${errs} қате (${firstErr})`:'');
+    if($('t-jr').classList.contains('on'))renderJournal();
+  }
+}
+function schedule(){
+  clearTimeout(timer);if(!cfg().auto)return;
+  const m=+(cfg().scanMin||15);nextAt=Date.now()+m*6e4;
+  timer=setTimeout(async()=>{await scanOnce();schedule()},m*6e4);
+}
+async function wake(){try{if(cfg().wake&&cfg().auto&&'wakeLock'in navigator)wl=await navigator.wakeLock.request('screen')}catch(e){}}
+function unwake(){try{wl&&wl.release()}catch(e){}wl=null}
+async function startAuto(){cfgSet({auto:true});wake();paintLive();await scanOnce();schedule()}
+function stopAuto(){cfgSet({auto:false});clearTimeout(timer);unwake();paintLive()}
+function paintLive(){
+  const on=!!cfg().auto;$('dot').className='dot'+(on?' on':'');$('autoBtn').textContent=on?'Тоқтату':'Қосу';
+  if(!on){$('live').textContent='Өшірулі';return}
+  if(scanning){$('live').textContent='Қосулы · скан жүріп жатыр...';return}
+  const s=Math.max(0,Math.round((nextAt-Date.now())/1000)),hm=new Date(lastScan).toLocaleTimeString('kk-KZ',{hour:'2-digit',minute:'2-digit'});
+  $('live').textContent=`Қосулы · келесі скан ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`+(lastScan?` · соңғы ${hm}: ${lastInfo}`:'');
+}
+setInterval(paintLive,1000);
+$('autoBtn').onclick=()=>cfg().auto?stopAuto():startAuto();
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden||!cfg().auto)return;
+  wake();
+  if(Date.now()>nextAt&&!scanning){clearTimeout(timer);scanOnce().then(schedule)}
+});
+
+let curJ=[];
+async function renderJournal(){
+  const srv=cfg().jsrc==='server';let J=jget();
+  if(srv){try{const r=await fetch('data/journal.json?t='+Date.now());J=await r.json()}catch(e){J=[]}}
+  curJ=J;$('jsrc').textContent='Көзі: '+(srv?'Server (GitHub)':'Local (телефон)');
+  const s=calcStats(J),d=(v,n)=>(+v).toFixed(n);
+  $('stats').innerHTML=`<div class="stat"><b>${s.n}</b><span>Барлық сигнал</span></div>
+   <div class="stat w"><b>${s.w}</b><span>Профит</span></div>
+   <div class="stat l"><b>${s.l}</b><span>Минус</span></div>
+   <div class="stat"><b>${s.o}</b><span>Ашық / күтуде</span></div>
+   <div class="stat"><b>${s.wr.toFixed(0)}%</b><span>Winrate</span></div>
+   <div class="stat ${s.R>=0?'w':'l'}"><b>${s.R>0?'+':''}${s.R.toFixed(2)}R</b><span>Net R</span></div>`;
+  $('stnote').textContent='Профит = TP1 алынды (+R:R), Минус = Stop Loss (−1R). Бір candle-де SL және TP1 бірге болса — SL деп саналады. Entry-ге жетпеген limit сигналдар Winrate-ке кірмейді.';
+  const by={};J.forEach(e=>{if(e.st==='WIN'||e.st==='LOSS'){const b=by[e.name]=by[e.name]||{w:0,l:0,R:0};e.st==='WIN'?b.w++:b.l++;b.R+=e.R}});
+  $('bysym').innerHTML=Object.keys(by).length?Object.entries(by).map(([k,b])=>`<div class="sym-row"><span>${esc(k)}</span><span><span class="p">${b.w}W</span> / <span class="n">${b.l}L</span> · ${b.R>0?'+':''}${b.R.toFixed(2)}R</span></div>`).join(''):'<div class="note">Жабылған сигнал әлі жоқ.</div>';
+  const TT={WIN:'PROFIT',LOSS:'LOSS',OPEN:'OPEN',PENDING:'LIMIT КҮТУДЕ',EXPIRED:'EXPIRED',MISSED:'MISSED'};
+  $('jlist').innerHTML=J.length?J.slice().reverse().slice(0,60).map(e=>`<div class="jr"><div class="h"><b class="${e.sig==='BUY'?'p':'n'}">${esc(e.sig)} ${esc(e.name)} · ${esc(e.tf)}</b><span class="tag ${esc(e.st)}">${TT[e.st]||esc(e.st)}${e.st==='WIN'?' +'+d(e.R,2)+'R':e.st==='LOSS'?' −1R':''}</span></div><div class="note">Entry ${d(e.entry,e.d)} · SL ${d(e.sl,e.d)} · TP1 ${d(e.tp1,e.d)} · ${new Date(e.t).toLocaleString('kk-KZ',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div></div>`).join(''):'<div class="note">Сигнал әлі жоқ. Auto-scan қосыңыз.</div>';
+}
+$('csv').onclick=()=>{
+  const h=['time','symbol','tf','signal','type','entry','sl','tp1','tp2','rr','score','status','R'];
+  const rows=curJ.map(e=>[new Date(e.t).toISOString(),e.name,e.tf,e.sig,e.type,e.entry,e.sl,e.tp1,e.tp2,(+e.rr).toFixed(2),e.score,e.st,e.R]);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[h,...rows].map(r=>r.join(',')).join('\n')],{type:'text/csv'}));a.download='ak-journal.csv';a.click();
+};
+$('jsrc').onclick=()=>{cfgSet({jsrc:cfg().jsrc==='server'?'local':'server'});renderJournal()};
+$('clr').onclick=()=>{if(cfg().jsrc==='server')return alert('Server тарихын GitHub-тағы data/journal.json файлынан өзгертуге болады.');if(confirm('Барлық сигнал тарихын өшіресіз бе?')){jset([]);renderJournal()}};
+
+function loadSettings(){
+  $('k-td').value=store.get('td');$('k-an').value=store.get('an');$('k-tg').value=store.get('tgtoken');$('k-chat').value=store.get('tgchat');
+  const c=cfg(),w=c.watch||['XAU/USD','BTC/USDT'];
+  $('wl').innerHTML=Object.keys(SYMS).map(k=>`<label><input type="checkbox" value="${k}"${w.includes(k)?' checked':''}>${k}</label>`).join('');
+  $('s-scantf').value=c.scanTf||'15m';$('s-min').value=String(c.scanMin||15);$('s-wake').checked=!!c.wake;$('s-notif').checked=!!c.notif;
+}
+function saveTg(){store.set('tgtoken',$('k-tg').value.trim());store.set('tgchat',$('k-chat').value.trim())}
+$('tgtest').onclick=async()=>{
+  saveTg();$('tgmsg').textContent='Жіберіліп жатыр...';
+  const ok=await tg('✅ AK Trading AI: Telegram сәтті қосылды');
+  $('tgmsg').textContent=ok?'Хабар жіберілді ✓ Telegram-ды тексеріңіз.':'Қате: '+tg.err;
+};
+$('save').onclick=()=>{
+  store.set('td',$('k-td').value.trim());store.set('an',$('k-an').value.trim());saveTg();
+  cfgSet({watch:[...document.querySelectorAll('#wl input:checked')].map(x=>x.value),scanTf:$('s-scantf').value,scanMin:+$('s-min').value,wake:$('s-wake').checked,notif:$('s-notif').checked});
+  if($('s-notif').checked&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission();
+  if(cfg().auto){schedule();wake()}
+  $('save').textContent='Сақталды ✓';setTimeout(()=>$('save').textContent='Сақтау',1500);
+};
+loadSettings();paintLive();renderJournal();
+if(cfg().auto)setTimeout(()=>scanOnce().then(schedule),2500);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.t));scrollTo(0,0);if(b.dataset.t==='jr')renderJournal()});
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
