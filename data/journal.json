@@ -21,5 +21,51 @@
   ],
   "st": "MISSED",
   "R": 0
+ },
+ {
+  "id": "1795297404201-rjo3",
+  "t": 1795297404201,
+  "name": "XAU/USD",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "MARKET",
+  "entry": 3536.21024,
+  "sl": 3536.3657610714286,
+  "tp1": 3534.79747,
+  "tp2": 3534.564188392857,
+  "rr": 9.084106655270286,
+  "score": -4,
+  "d": 2,
+  "src": "Twelve Data",
+  "top": [
+   "HTF (4h) Market Structure: Bearish — LH + LL, үлкен тренд төмен.",
+   "LTF (15m) құрылым Bearish.",
+   "Premium аймағында (81%) — Sell үшін қолайлы баға."
+  ],
+  "st": "OPEN",
+  "R": 0
+ },
+ {
+  "id": "1795297405396-6vx1",
+  "t": 1795297405396,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "MARKET",
+  "entry": 60410.22,
+  "sl": 60844.74107142857,
+  "tp1": 59690,
+  "tp2": 59106.65678571429,
+  "rr": 1.6575030472794792,
+  "score": -3,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "HTF (4h) Market Structure: Bearish — LH + LL, үлкен тренд төмен.",
+   "Buy-side Liquidity Sweep: баға 60342.10 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
+   "Premium аймағында (85%) — Sell үшін қолайлы баға."
+  ],
+  "st": "OPEN",
+  "R": 0
  }
 ]
