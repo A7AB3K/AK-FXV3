@@ -65,6 +65,29 @@
    "Buy-side Liquidity Sweep: баға 60342.10 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
    "Premium аймағында (85%) — Sell үшін қолайлы баға."
   ],
+  "st": "WIN",
+  "R": 1.6575030472794792
+ },
+ {
+  "id": "1795337691206-xhmd",
+  "t": 1795337691206,
+  "name": "XAU/USD",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "MARKET",
+  "entry": 3537.34349,
+  "sl": 3537.4978151785713,
+  "tp1": 3536.55781,
+  "tp2": 3536.326322232143,
+  "rr": 5.091068141149662,
+  "score": -4,
+  "d": 2,
+  "src": "Twelve Data",
+  "top": [
+   "HTF (4h) Market Structure: Bearish — LH + LL, үлкен тренд төмен.",
+   "LTF (15m) құрылым Bearish.",
+   "Premium аймағында (92%) — Sell үшін қолайлы баға."
+  ],
   "st": "OPEN",
   "R": 0
  }
