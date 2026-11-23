@@ -180,8 +180,8 @@
    "Buy-side Liquidity Sweep: баға 3590.92 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
    "Premium аймағында (65%) — Sell үшін қолайлы баға."
   ],
-  "st": "OPEN",
-  "R": 0
+  "st": "LOSS",
+  "R": -1
  },
  {
   "id": "1795402971699-ono4",
@@ -202,6 +202,52 @@
    "HTF (4h) Market Structure: Bullish — HH + HL, үлкен тренд жоғары.",
    "Sell-side Liquidity Sweep: баға 61290.58 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "LTF (15m) құрылым Bullish."
+  ],
+  "st": "MISSED",
+  "R": 0
+ },
+ {
+  "id": "1795438488305-13ka",
+  "t": 1795438488305,
+  "name": "XAU/USD",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "LIMIT",
+  "entry": 3629.501385,
+  "sl": 3632.7743219642857,
+  "tp1": 3601.00828,
+  "tp2": 3596.0988745535715,
+  "rr": 8.705668734508778,
+  "score": -3,
+  "d": 2,
+  "src": "Twelve Data",
+  "top": [
+   "Buy-side Liquidity Sweep: баға 3626.21 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
+   "Premium аймағында (82%) — Sell үшін қолайлы баға.",
+   "Order Flow: Delta теріс (0.0%) — сатушылар басым (approximation (candle негізінде))."
+  ],
+  "st": "PENDING",
+  "R": 0
+ },
+ {
+  "id": "1795438489408-4waq",
+  "t": 1795438489408,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "BUY",
+  "type": "LIMIT",
+  "entry": 60867.4,
+  "sl": 60639.30089285714,
+  "tp1": 61365.24,
+  "tp2": 61551.697321428575,
+  "rr": 2.1825600557401588,
+  "score": 3,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "HTF (4h) Market Structure: Bullish — HH + HL, үлкен тренд жоғары.",
+   "Sell-side Liquidity Sweep: баға 61230.00 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
+   "Order Flow: баға түсті, бірақ Cumulative Delta оң — Bullish divergence (нақты taker buy/sell)."
   ],
   "st": "PENDING",
   "R": 0
