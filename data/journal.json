@@ -157,6 +157,52 @@
    "LTF (15m) құрылым Bearish.",
    "Жоғарыда Bearish FVG бар (3532.96–3538.32) — кедергі аймағы."
   ],
+  "st": "LOSS",
+  "R": -1
+ },
+ {
+  "id": "1795402970506-41oz",
+  "t": 1795402970506,
+  "name": "XAU/USD",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "MARKET",
+  "entry": 3593.11423,
+  "sl": 3635.0383226785716,
+  "tp1": 3538.11046,
+  "tp2": 3467.3419519642857,
+  "rr": 1.3119847439921857,
+  "score": -5,
+  "d": 2,
+  "src": "Twelve Data",
+  "top": [
+   "HTF (4h) Market Structure: Bearish — LH + LL, үлкен тренд төмен.",
+   "Buy-side Liquidity Sweep: баға 3590.92 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
+   "Premium аймағында (65%) — Sell үшін қолайлы баға."
+  ],
+  "st": "OPEN",
+  "R": 0
+ },
+ {
+  "id": "1795402971699-ono4",
+  "t": 1795402971699,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "BUY",
+  "type": "LIMIT",
+  "entry": 60151.645000000004,
+  "sl": 60066.35285714286,
+  "tp1": 60342.1,
+  "tp2": 60407.52142857143,
+  "rr": 2.232972389015845,
+  "score": 6,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "HTF (4h) Market Structure: Bullish — HH + HL, үлкен тренд жоғары.",
+   "Sell-side Liquidity Sweep: баға 61290.58 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
+   "LTF (15m) құрылым Bullish."
+  ],
   "st": "PENDING",
   "R": 0
  }
