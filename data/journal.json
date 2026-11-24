@@ -299,5 +299,28 @@
   "st": "MISSED",
   "R": 0,
   "t2": 1795482000000
+ },
+ {
+  "id": "1795553437757-ginf",
+  "t": 1795553437757,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "BUY",
+  "type": "LIMIT",
+  "entry": 59545.36,
+  "sl": 59294.52314285714,
+  "tp1": 60294.68,
+  "tp2": 60297.870571428575,
+  "rr": 2.9872802925976916,
+  "score": 5,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "HTF (4h) Market Structure: Bullish — HH + HL, үлкен тренд жоғары.",
+   "Sell-side Liquidity Sweep: баға 59760.69 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
+   "Discount аймағында (34%) — Buy үшін қолайлы баға."
+  ],
+  "st": "PENDING",
+  "R": 0
  }
 ]
