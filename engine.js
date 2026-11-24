@@ -74,7 +74,9 @@ function session(){
 }
 const dec=p=>p>=1000?2:p>=10?3:5;
 
-function plan(dir,px,A,Z,ph,pl){
+const DEFAULTS={minRiskATR:1.2,minRR:1.5,minScore:3,minAtrPct:0.0003};
+function plan(dir,px,A,Z,ph,pl,O){
+  O=O||DEFAULTS;
   const s=dir==='BUY'?1:-1;
   const cand=Z.filter(z=>s>0?(z.dir==='bull'&&z.top<=px+.2*A):(z.dir==='bear'&&z.bot>=px-.2*A))
     .filter(z=>Math.abs((s>0?z.top:z.bot)-px)<=3*A).sort((a,b)=>s>0?b.top-a.top:a.bot-b.bot)[0];
@@ -82,15 +84,16 @@ function plan(dir,px,A,Z,ph,pl){
   if(cand){const inside=px>=cand.bot&&px<=cand.top;entry=inside?px:(cand.top+cand.bot)/2;base=s>0?cand.bot:cand.top}
   else{const arr=(s>0?pl:ph).filter(p=>s>0?p.p<px:p.p>px).map(p=>p.p);base=arr.length?(s>0?arr.at(-1):arr.at(-1)):px-s*1.5*A}
   let sl=base-s*.25*A,risk=Math.abs(entry-sl);
-  if(risk<.3*A){sl=entry-s*.3*A;risk=.3*A}
-  if(risk>4*A)return null;
+  if(risk<O.minRiskATR*A){sl=entry-s*O.minRiskATR*A;risk=O.minRiskATR*A}
+  if(risk>5*A)return null;
   const tg=(s>0?ph:pl).map(p=>p.p).filter(p=>s>0?p>entry+1.2*risk:p<entry-1.2*risk).sort((a,b)=>s>0?a-b:b-a)[0];
   const tp1=tg!=null?tg:entry+s*1.5*risk;
   let tp2=entry+s*3*risk;if(Math.abs(tp2-entry)<=Math.abs(tp1-entry))tp2=tp1+s*1.5*risk;
   return {entry,sl,tp1,tp2,rr:Math.abs(tp1-entry)/risk,type:cand&&entry!==px?'LIMIT':'MARKET',zone:cand||null};
 }
 
-function analyze(c,h,name,tf){
+function analyze(c,h,name,tf,opts){
+  const O=Object.assign({},DEFAULTS,opts||{});
   const n=c.length,px=c.at(-1).c,A=atr(c),R=[];let sc=0;
   const add=(t,s)=>{R.push({t,s});sc+=s};
   const sH=structure(h),sL=structure(c),Z=zones(c,A),sw=sweep(c,sL.ph,sL.pl),P=profile(c),D=delta(c);
@@ -118,11 +121,12 @@ function analyze(c,h,name,tf){
   else if(D.cd>0)add(`Order Flow: Delta оң (${D.pct.toFixed(1)}%) — сатып алушылар басым (${src}).`,1);
   else add(`Order Flow: Delta теріс (${D.pct.toFixed(1)}%) — сатушылар басым (${src}).`,-1);
 
-  let sig=sc>=3?'BUY':sc<=-3?'SELL':'WAIT',pl_=null,why='';
+  let sig=sc>=O.minScore?'BUY':sc<=-O.minScore?'SELL':'WAIT',pl_=null,why='';
+  if(sig!=='WAIT'&&A/px<O.minAtrPct){why='Нарық тым тыныш (ATR өте аз) — сигнал сенімсіз.';sig='WAIT'}
   if(sig!=='WAIT'){
-    pl_=plan(sig,px,A,Z,sL.ph,sL.pl);
+    pl_=plan(sig,px,A,Z,sL.ph,sL.pl,O);
     if(!pl_){why='Stop Loss тым алыс — тәуекел/пайда қатынасы нашар.';sig='WAIT'}
-    else if(pl_.rr<1.2){why=`R:R тым төмен (${pl_.rr.toFixed(2)}).`;sig='WAIT';pl_=null}
+    else if(pl_.rr<O.minRR){why=`R:R тым төмен (${pl_.rr.toFixed(2)}).`;sig='WAIT';pl_=null}
   }
   const ses=session();
   const bias=sc>0?'Bullish':sc<0?'Bearish':'Neutral';
@@ -143,15 +147,15 @@ function evalEntry(e,cs){
     if(e.st==='PENDING'){
       const fill=b?x.l<=e.entry:x.h>=e.entry;
       if(!fill){
-        if(b?x.h>=e.tp1:x.l<=e.tp1){e.st='MISSED';return e.st}
-        if(x.t-e.t>TFMS[e.tf]*48){e.st='EXPIRED';return e.st}
+        if(b?x.h>=e.tp1:x.l<=e.tp1){e.st='MISSED';e.t2=x.t;return e.st}
+        if(x.t-e.t>TFMS[e.tf]*48){e.st='EXPIRED';e.t2=x.t;return e.st}
         continue;
       }
       e.st='OPEN';
     }
     if(e.st==='OPEN'){
-      if(b?x.l<=e.sl:x.h>=e.sl){e.st='LOSS';e.R=-1;return e.st}
-      if(b?x.h>=e.tp1:x.l<=e.tp1){e.st='WIN';e.R=e.rr;return e.st}
+      if(b?x.l<=e.sl:x.h>=e.sl){e.st='LOSS';e.R=-1;e.t2=x.t;return e.st}
+      if(b?x.h>=e.tp1:x.l<=e.tp1){e.st='WIN';e.R=e.rr;e.t2=x.t;return e.st}
     }
   }
   const age=Date.now()-e.t;
@@ -169,4 +173,4 @@ function sigText(e){
   return `${e.sig==='BUY'?'🟢':'🔴'} ${e.sig} · ${e.name} · ${e.tf}\nEntry (${e.type}): ${f(e.entry)}\nSL: ${f(e.sl)}\nTP1: ${f(e.tp1)}\nTP2: ${f(e.tp2)}\nR:R 1:${(+e.rr).toFixed(2)} · Score ${e.score>0?'+':''}${e.score}\n\n`+e.top.map(x=>'• '+x).join('\n')+`\n\n⚠ Қаржылық кеңес емес. Тәуекел ≤ 1%.`;
 }
 /* v2-pure-end */
-if(typeof module!=='undefined')module.exports={SYMS,HTF,TFMS,dec,analyze,evalEntry,calcStats,sigText};
+if(typeof module!=='undefined')module.exports={DEFAULTS,SYMS,HTF,TFMS,dec,analyze,evalEntry,calcStats,sigText};

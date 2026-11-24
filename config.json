@@ -1,4 +1,9 @@
 {
   "watch": ["XAU/USD", "BTC/USDT"],
-  "tfs": ["15m"]
+  "tfs": ["15m"],
+  "backtest": {
+    "symbols": ["BTC/USDT", "ETH/USDT", "XAU/USD"],
+    "tf": "15m",
+    "candles": 20000
+  }
 }
