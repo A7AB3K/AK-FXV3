@@ -1,9 +1,31 @@
 {
-  "watch": ["XAU/USD", "BTC/USDT"],
-  "tfs": ["15m"],
+  "watch": [
+    "XAU/USD",
+    "BTC/USDT"
+  ],
+  "tfs": [
+    "15m"
+  ],
   "backtest": {
-    "symbols": ["BTC/USDT", "ETH/USDT", "XAU/USD"],
+    "symbols": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "XAU/USD"
+    ],
     "tf": "15m",
     "candles": 20000
+  },
+  "sessionBacktest": {
+    "symbol": "XAU/USD",
+    "tfs": [
+      "15m",
+      "1h"
+    ],
+    "pip": 0.1,
+    "cost": 0.3,
+    "candles": {
+      "15m": 20000,
+      "1h": 5000
+    }
   }
 }
