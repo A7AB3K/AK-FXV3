@@ -1,0 +1,34 @@
+name: AK Backtest
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run backtest
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          TD_KEY: ${{ secrets.TD_KEY }}
+        run: node scanner/backtest.js
+      - name: Save report
+        if: always()
+        run: |
+          git config user.name "ak-bot"
+          git config user.email "ak-bot@users.noreply.github.com"
+          git add data/backtest.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "backtest report"
+            git pull --rebase
+            git push
+          fi
