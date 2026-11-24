@@ -115,7 +115,8 @@ function record(J, name, tf, r, src) {
       if (L.c.length < 80) throw new Error('Дерек жеткіліксіз');
       ok++;
       if (SYMS[name].kind !== 'crypto' && !L.proxy && Date.now() - L.c[L.c.length - 1].t > 3 * TFMS[tf]) { closed++; console.log(`${name} ${tf}: нарық жабық`); continue; }
-      const r = analyze(L.c, htf, name, tf);
+      if (L.proxy && !CFG.allowProxy) { console.log(`${name} ${tf}: proxy дерегі (PAXG) — өткізілді`); continue; }
+      const r = analyze(L.c, htf, name, tf, CFG.params);
       console.log(`${name} ${tf}: ${r.sig} (score ${r.score})`);
       if (r.sig !== 'WAIT' && r.plan) {
         const e = record(J, name, tf, r, L.src + (L.proxy ? ' (proxy)' : ''));
