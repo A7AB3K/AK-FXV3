@@ -33,11 +33,31 @@ async function getJSON(u) {
   return r.json();
 }
 const fmtDT = t => new Date(t).toISOString().slice(0, 19).replace('T', ' ');
+const RETRY_MS = +process.env.RETRY_MS || 65000;
+// Twelve Data call with rate-limit handling: per-minute limit -> wait and retry; daily limit -> clear message.
+async function tdGet(url) {
+  for (let a = 0; a < 5; a++) {
+    const r = await fetch(url, { signal: AbortSignal.timeout(30000) });
+    let j = null;
+    try { j = await r.json(); } catch (e) { /* not json */ }
+    const msg = (j && j.message) || '';
+    const limited = r.status === 429 || (j && j.code === 429);
+    if (limited) {
+      if (/day|daily/i.test(msg)) throw new Error('Twelve Data КҮНДІК лимиті бітті (800 сұраныс). Ертең қайталаңыз. ' + msg.slice(0, 120));
+      console.log(`Twelve Data минуттық лимит (429). ${RETRY_MS / 1000} сек күтеміз... (${a + 1}/5)`);
+      await sleep(RETRY_MS);
+      continue;
+    }
+    if (!r.ok) throw new Error('HTTP ' + r.status + (msg ? ' — ' + msg.slice(0, 120) : ''));
+    return j;
+  }
+  throw new Error('Twelve Data лимиті: 5 рет қайталап та болмады. AK Scan workflow-ды өшіріп, 5 минуттан кейін қайта іске қосыңыз.');
+}
 async function twelvePages(sym, tf, total) {
   let out = [], end = '';
   while (out.length < total) {
     const n = Math.min(5000, total - out.length);
-    const d = await getJSON(`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(sym)}&interval=${TDI[tf]}&outputsize=${n}&timezone=UTC&apikey=${KEY}${end ? '&end_date=' + encodeURIComponent(end) : ''}`);
+    const d = await tdGet(`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(sym)}&interval=${TDI[tf]}&outputsize=${n}&timezone=UTC&apikey=${KEY}${end ? '&end_date=' + encodeURIComponent(end) : ''}`);
     if (d.status === 'error' || !d.values || !d.values.length) { if (out.length) break; throw new Error(d.message || 'Twelve Data қатесі'); }
     const rows = d.values.map(x => ({ t: Date.parse(x.datetime.replace(' ', 'T') + 'Z'), o: +x.open, h: +x.high, l: +x.low, c: +x.close })).reverse();
     out = rows.concat(out);
