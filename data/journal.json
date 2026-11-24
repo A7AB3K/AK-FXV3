@@ -272,8 +272,9 @@
    "Sell-side Liquidity Sweep: баға 3630.55 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "CHoCH bullish: баға соңғы swing деңгейін жоғары бұзды — тренд бағыты өзгеруі мүмкін."
   ],
-  "st": "PENDING",
-  "R": 0
+  "st": "MISSED",
+  "R": 0,
+  "t2": 1795481100000
  },
  {
   "id": "1795480886484-up9e",
@@ -295,7 +296,8 @@
    "Sell-side Liquidity Sweep: баға 61060.00 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "LTF (15m) құрылым Bullish."
   ],
-  "st": "PENDING",
-  "R": 0
+  "st": "MISSED",
+  "R": 0,
+  "t2": 1795482000000
  }
 ]
