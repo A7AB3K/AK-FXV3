@@ -371,5 +371,28 @@
   "st": "LOSS",
   "R": -1,
   "t2": 1795591800000
+ },
+ {
+  "id": "1795648542553-xjse",
+  "t": 1795648542553,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "BUY",
+  "type": "MARKET",
+  "entry": 60287.99,
+  "sl": 59741.57696428572,
+  "tp1": 61118.01,
+  "tp2": 61927.22910714283,
+  "rr": 1.5190340378958762,
+  "score": 4,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "HTF (4h) Market Structure: Bullish — HH + HL, үлкен тренд жоғары.",
+   "Sell-side Liquidity Sweep: баға 60322.49 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
+   "LTF (15m) құрылым Bullish."
+  ],
+  "st": "OPEN",
+  "R": 0
  }
 ]
