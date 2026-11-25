@@ -344,8 +344,9 @@
    "Sell-side Liquidity Sweep: баға 3560.75 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "LTF (15m) құрылым Bullish."
   ],
-  "st": "PENDING",
-  "R": 0
+  "st": "LOSS",
+  "R": -1,
+  "t2": 1795585500000
  },
  {
   "id": "1795579361581-2lz6",
@@ -367,7 +368,8 @@
    "Sell-side Liquidity Sweep: баға 59129.99 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "Discount аймағында (20%) — Buy үшін қолайлы баға."
   ],
-  "st": "OPEN",
-  "R": 0
+  "st": "LOSS",
+  "R": -1,
+  "t2": 1795591800000
  }
 ]
