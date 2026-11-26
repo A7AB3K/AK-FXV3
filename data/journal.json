@@ -392,7 +392,31 @@
    "Sell-side Liquidity Sweep: баға 60322.49 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
    "LTF (15m) құрылым Bullish."
   ],
-  "st": "OPEN",
+  "st": "WIN",
+  "R": 1.5190340378958762,
+  "t2": 1795652100000
+ },
+ {
+  "id": "1795670513202-ov4c",
+  "t": 1795670513202,
+  "name": "BTC/USDT",
+  "tf": "15m",
+  "sig": "BUY",
+  "type": "LIMIT",
+  "entry": 60551.875,
+  "sl": 60310.753,
+  "tp1": 61106,
+  "tp2": 61275.241,
+  "rr": 2.2981105000788014,
+  "score": 4,
+  "d": 2,
+  "src": "Binance",
+  "top": [
+   "Sell-side Liquidity Sweep: баға 60763.39 төменгі liquidity-ді алып, жоғары қайтты — Bullish сигнал.",
+   "LTF (15m) құрылым Bullish.",
+   "Төменде Bullish OB бар (60457.74–60646.01) — қолдау аймағы."
+  ],
+  "st": "PENDING",
   "R": 0
  }
 ]
