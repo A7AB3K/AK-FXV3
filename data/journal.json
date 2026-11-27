@@ -419,5 +419,28 @@
   "st": "LOSS",
   "R": -1,
   "t2": 1795705200000
+ },
+ {
+  "id": "1795768885766-t76e",
+  "t": 1795768885766,
+  "name": "XAU/USD",
+  "tf": "15m",
+  "sig": "SELL",
+  "type": "MARKET",
+  "entry": 3671.11326,
+  "sl": 3691.14600375,
+  "tp1": 3621.25764,
+  "tp2": 3611.01502875,
+  "rr": 2.4887065207930017,
+  "score": -5,
+  "d": 2,
+  "src": "Twelve Data",
+  "top": [
+   "HTF (4h) Market Structure: Bearish — LH + LL, үлкен тренд төмен.",
+   "Buy-side Liquidity Sweep: баға 3666.09 жоғарғы liquidity-ді алып, төмен қайтты — Bearish сигнал.",
+   "Premium аймағында (93%) — Sell үшін қолайлы баға."
+  ],
+  "st": "OPEN",
+  "R": 0
  }
 ]
